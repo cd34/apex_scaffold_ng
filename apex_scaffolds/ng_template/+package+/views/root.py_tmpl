@@ -1,6 +1,40 @@
 from pyramid.i18n import TranslationString as _
+from pyramid.response import Response
 from pyramid.view import view_config
+
+from json import dumps
+
+import redis
+
+from socketio.namespace import BaseNamespace
+from socketio import socketio_manage
+from socketio.mixins import BroadcastMixin
+
+r = redis.Redis()
+
+class OurNamespace(BaseNamespace, BroadcastMixin):
+    def listener(self):
+        r = redis.StrictRedis()
+        r = r.pubsub()
+
+        r.subscribe('location')
+
+        for m in r.listen():
+            if m['type'] == 'message':
+                self.broadcast_event('location', m['data'])
+
+    def recv_connect(self):
+        self.spawn(self.listener)
 
 @view_config(route_name='index', renderer='root/index.mako')
 def index(request):
+    r.publish('ns', dumps({'test':[1,2]}))
     return {}
+
+@view_config(route_name='socket_io')
+def socketio_service(request):
+    socketio_manage(request.environ,
+                    {'/ns': OurNamespace},
+                    request=request)
+        
+    return Response('')
