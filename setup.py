@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-version = '0.9.0'
+version = '1.0.0'
 
 setup(
     version=version,
@@ -9,8 +9,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=True,
-    entry_points = """\
-        [paste.paster_create_template]
+    entry_points="""\
+        [pyramid.scaffold]
         raja=apex_scaffolds:RajaTemplate
-    """
+    """,
 )

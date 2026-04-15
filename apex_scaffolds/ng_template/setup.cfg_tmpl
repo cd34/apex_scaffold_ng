@@ -1,9 +1,5 @@
-[nosetests]
-match=^test
-nocapture=1
-cover-package={{package}}
-with-coverage=1
-cover-erase=1
+[tool:pytest]
+testpaths = tests
 
 [compile_catalog]
 directory = {{package}}/locale

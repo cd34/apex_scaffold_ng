@@ -9,20 +9,18 @@ pyramid.debug_templates = false
 pyramid.default_locale_name = en
 pyramid.includes = pyramid_tm
 
-mako.directories = {{project}}:templates
+jinja2.directories = {{package}}:templates
 
 sqlalchemy.url = sqlite:///%(here)s/{{project}}.db
-#sqlalchemy.url = mysql://username:password@localhost/database?use_unicode=1&charset=utf8
+#sqlalchemy.url = mysql+pymysql://username:password@localhost/database?charset=utf8mb4
 sqlalchemy.echo = false
 sqlalchemy.echo_pool = false
 sqlalchemy.pool_recycle = 10
 
 [server:main]
-use = egg:gunicorn#main
+use = egg:waitress#main
 host = 0.0.0.0
-port = 8080
-workers = 4
-worker_class = socketio.sgunicorn.GeventSocketIOWorker
+port = 6543
 
 # Begin logging configuration
 
@@ -59,6 +57,6 @@ level = NOTSET
 formatter = generic
 
 [formatter_generic]
-format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
+format = %(asctime)s %(levelname)-5.5s [%(name)s:%(lineno)s][%(threadName)s] %(message)s
 
 # End logging configuration

@@ -1,7 +1,3 @@
-from gevent import monkey
-monkey.patch_all()
-from socketio.server import SocketIOServer
-
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP
 
@@ -14,26 +10,26 @@ from {{package}}.models import (
 
 
 def main(global_config, **settings):
-	""" This function returns a Pyramid WSGI application.
-	"""
-	engine = engine_from_config(settings, 'sqlalchemy.')
-        DBSession.configure(bind=engine)
-        Base.metadata.bind = engine
-        config = Configurator(settings=settings)
-        config.add_renderer('jsonp', JSONP(param_name='callback'))
-        config.add_static_view('static', 'static', cache_max_age=3600)
+    """ This function returns a Pyramid WSGI application.
+    """
+    engine = engine_from_config(settings, 'sqlalchemy.')
+    DBSession.configure(bind=engine)
+    Base.metadata.bind = engine
+    config = Configurator(settings=settings)
+    config.include('pyramid_jinja2')
+    config.add_renderer('jsonp', JSONP(param_name='callback'))
+    config.add_static_view('static', 'static', cache_max_age=3600)
 
-	config.include('apex')
+    config.include('apex')
 
-	config.add_subscriber('{{package}}.lib.subscribers.add_renderer_globals', 'pyramid.events.BeforeRender')
+    config.add_subscriber(
+        '{{package}}.lib.subscribers.add_renderer_globals',
+        'pyramid.events.BeforeRender',
+    )
 
-	#views/root.py
-	config.add_route('index', '/')
+    # views/root.py
+    config.add_route('index', '/')
 
-        config.add_route('socket_io', 'socket.io/*remaining')
-	config.scan()
+    config.scan()
 
-        return SocketIOServer(('0.0.0.0', 8080), config.make_wsgi_app(),
-            resource='socket.io', policy_server=True,
-            policy_listener=('0.0.0.0', 10843)).serve_forever()
-
+    return config.make_wsgi_app()

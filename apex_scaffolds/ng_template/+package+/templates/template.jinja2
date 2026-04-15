@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ request.static_url('{{package}}:static/bootstrap/css/bootstrap.min.css') }}">
+    {% block extra_head %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+    <script src="{{ request.static_url('{{package}}:static/bootstrap/js/bootstrap.min.js') }}"></script>
+</body>
+</html>

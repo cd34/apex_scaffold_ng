@@ -8,3 +8,8 @@
 *~
 ._*
 *.swp
+__pycache__/
+dist/
+build/
+.tox/
+.venv/
